@@ -1,8 +1,5 @@
 package com.zan.coopt1
 
-/* Video Link: https://www.youtube.com/watch?v=cJxo96eTHVU */
-
-
 import android.content.Context
 import android.os.Bundle
 import android.widget.DatePicker
@@ -18,22 +15,41 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import java.util.*
+import java.util.Calendar
+import java.util.Date
 
+/**
+ * Team: ZAN
+ * Members: Nicholas Raynes, Amanda Schepp, Zack Bowles-Lapointe
+ * Last Updated: September 22nd, 2023
+ * Description: A simple application that allows the user to select
+ * a date using Android's DatePicker widget and displaying it.
+ */
+
+/**
+ * MainActivity is the main entry point of the Android application.
+ */
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            // Display the date picker UI.
             ShowDatePicker(context = this)
         }
     }
 }
 
+/**
+ * A composable function that displays a date picker and selected date information.
+ *
+ * @param context The Android context.
+ */
 @Composable
-fun ShowDatePicker(context: Context){
+fun ShowDatePicker(context: Context) {
+    // Initialize date components.
     val year: Int
     val month: Int
-    val day : Int
+    val day: Int
 
     val calendar = Calendar.getInstance()
     year = calendar.get(Calendar.YEAR)
@@ -41,22 +57,28 @@ fun ShowDatePicker(context: Context){
     day = calendar.get(Calendar.DAY_OF_MONTH)
     calendar.time = Date()
 
+    // Create a mutable state for the selected date.
     val date = remember { mutableStateOf("") }
+
+    // Create a DatePickerDialog to allow the user to pick a date.
     val datePickerDialog = DatePickerDialog(
         context,
-        {_:DatePicker, year: Int, month: Int, dayOfMonth: Int ->
+        { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
             date.value = "$dayOfMonth/$month/$year"
         }, year, month, day
     )
 
-    Column (
+    // Composable UI layout using Column.
+    Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
-    ){
-
+    ) {
+        // Display the selected date.
         Text(text = "Selected Date: ${date.value}")
         Spacer(modifier = Modifier.size(16.dp))
+
+        // Button to open the date picker dialog.
         Button(onClick = {
             datePickerDialog.show()
         }) {
@@ -64,4 +86,3 @@ fun ShowDatePicker(context: Context){
         }
     }
 }
-
