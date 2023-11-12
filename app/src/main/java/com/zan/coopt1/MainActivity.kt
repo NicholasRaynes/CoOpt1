@@ -21,7 +21,7 @@ import java.util.Date
 /**
  * Team: ZAN
  * Members: Nicholas Raynes, Amanda Schepp, Zack Bowles-Lapointe
- * Last Updated: September 22nd, 2023
+ * Last Updated: November 12th, 2023
  * Description: A simple application that allows the user to select
  * a date using Android's DatePicker widget and displaying it.
  */
@@ -60,13 +60,13 @@ fun ShowDatePicker(context: Context) {
     // Create a mutable state for the selected date.
     val date = remember { mutableStateOf("") }
 
-    // Create a DatePickerDialog to allow the user to pick a date.
-    val datePickerDialog = DatePickerDialog(
-        context,
-        { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
-            date.value = "$dayOfMonth/${month+1}/$year"
-        }, year, month, day
-    )
+    // OLD IMPLEMENTATION
+    //    val datePickerDialog = DatePickerDialog(
+    //        context,
+    //        { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
+    //            date.value = "$dayOfMonth/${month+1}/$year"
+    //        }, year, month, day
+    //    )
 
     // Composable UI layout using Column.
     Column(
@@ -80,7 +80,8 @@ fun ShowDatePicker(context: Context) {
 
         // Button to open the date picker dialog.
         Button(onClick = {
-            datePickerDialog.show()
+            // OLD IMPLEMENTATION
+            // datePickerDialog.show()
         }) {
             Text(text = "Open Date Picker")
         }
