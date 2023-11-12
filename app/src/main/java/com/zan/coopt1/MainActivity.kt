@@ -1,27 +1,28 @@
 package com.zan.coopt1
 
-import android.content.Context
 import android.os.Bundle
-import android.widget.DatePicker
-import android.app.DatePickerDialog
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import java.util.Calendar
 import java.util.Date
+
+// Debug OR Refactor #1 - Nicholas Raynes
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SelectableDates
+import androidx.compose.material3.rememberDatePickerState
+import java.text.SimpleDateFormat
+import java.util.TimeZone
 
 /**
  * Team: ZAN
  * Members: Nicholas Raynes, Amanda Schepp, Zack Bowles-Lapointe
- * Last Updated: September 22nd, 2023
+ * Last Updated: November 12th, 2023
  * Description: A simple application that allows the user to select
  * a date using Android's DatePicker widget and displaying it.
  */
@@ -34,55 +35,51 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             // Display the date picker UI.
-            ShowDatePicker(context = this)
+            ShowDatePicker()
         }
     }
 }
 
 /**
  * A composable function that displays a date picker and selected date information.
- *
- * @param context The Android context.
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ShowDatePicker(context: Context) {
-    // Initialize date components.
-    val year: Int
-    val month: Int
-    val day: Int
-
-    val calendar = Calendar.getInstance()
-    year = calendar.get(Calendar.YEAR)
-    month = calendar.get(Calendar.MONTH)
-    day = calendar.get(Calendar.DAY_OF_MONTH)
-    calendar.time = Date()
-
-    // Create a mutable state for the selected date.
-    val date = remember { mutableStateOf("") }
-
-    // Create a DatePickerDialog to allow the user to pick a date.
-    val datePickerDialog = DatePickerDialog(
-        context,
-        { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
-            date.value = "$dayOfMonth/${month+1}/$year"
-        }, year, month, day
-    )
-
-    // Composable UI layout using Column.
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        // Display the selected date.
-        Text(text = "Selected Date: ${date.value}")
-        Spacer(modifier = Modifier.size(16.dp))
-
-        // Button to open the date picker dialog.
-        Button(onClick = {
-            datePickerDialog.show()
-        }) {
-            Text(text = "Open Date Picker")
+fun ShowDatePicker() {
+    // Debug OR Refactor #1 - Nicholas Raynes
+    val datePickerState = rememberDatePickerState(selectableDates = object : SelectableDates {
+        override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+            // Allow all dates to be selectable
+            return true
         }
+    })
+    val selectedDate = datePickerState.selectedDateMillis?.let {
+        convertMillisToDate(it)
     }
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        DatePicker(
+            state = datePickerState
+        )
+        Spacer(
+            modifier = Modifier.height(
+                32.dp
+            )
+        )
+        Text(
+            text = selectedDate.toString(),
+        )
+    }
+}
+
+// Debug OR Refactor #1 - Nicholas Raynes
+/**
+ * Converts milliseconds to a formatted date string.
+ *
+ * @param millis The time in milliseconds.
+ * @return A formatted date string in the "dd/MM/yyyy" format.
+ */
+private fun convertMillisToDate(millis: Long): String {
+    val formatter = SimpleDateFormat("dd/MM/yyyy")
+    formatter.timeZone = TimeZone.getTimeZone("UTC")
+    return formatter.format(Date(millis))
 }
